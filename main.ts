@@ -7,6 +7,7 @@ function shootLogic () {
     }
     if (bullet.isTouching(enemy)) {
         radio.sendString("hit")
+        game.addScore(1)
         showExplosion()
     }
     bullet.delete()
@@ -60,16 +61,21 @@ function showExplosion () {
         # # # # #
         `))
     for (let value of list) {
-        value.showImage(0, 5)
+        value.showImage(0, 3)
     }
     basic.clearScreen()
 }
 input.onButtonPressed(Button.AB, function () {
     if (game_has_started == 1) {
-        shootLogic()
+        if (game.isGameOver()) {
+            control.reset()
+        } else {
+            shootLogic()
+        }
     } else {
-        startGame()
         radio.sendString("start")
+        game.startCountdown(game_duration)
+        startGame()
     }
 })
 radio.onReceivedString(function (receivedString) {
@@ -85,15 +91,14 @@ radio.onReceivedString(function (receivedString) {
             enemy_bullet.change(LedSpriteProperty.Y, 1)
             basic.pause(25)
         }
-        if (enemy_bullet.isTouching(player)) {
-            radio.sendString("hit")
-        }
         enemy_bullet.delete()
+        game.addScore(-1)
     }
     if (receivedString == "hit") {
         showExplosion()
     }
     if (receivedString == "start") {
+        game.startCountdown(game_duration)
         startGame()
     }
 })
@@ -108,6 +113,10 @@ let list: Image[] = []
 let enemy: game.LedSprite = null
 let player: game.LedSprite = null
 let bullet: game.LedSprite = null
+let game_duration = 0
 let game_has_started = 0
 radio.setGroup(69)
+radio.sendString("conn_establish")
 game_has_started = 0
+game_duration = 5000
+images.iconImage(IconNames.Ghost).showImage(0)
