@@ -118,5 +118,5 @@ let game_has_started = 0
 radio.setGroup(69)
 radio.sendString("conn_establish")
 game_has_started = 0
-game_duration = 5000
+game_duration = 30000
 images.iconImage(IconNames.Ghost).showImage(0)
