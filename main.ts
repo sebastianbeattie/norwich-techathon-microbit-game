@@ -1,3 +1,21 @@
+function shootLogic () {
+    bullet = game.createSprite(player.get(LedSpriteProperty.X), 4)
+    radio.sendString("fire")
+    for (let index = 0; index < 4; index++) {
+        bullet.change(LedSpriteProperty.Y, -1)
+        basic.pause(25)
+    }
+    if (bullet.isTouching(enemy)) {
+        radio.sendString("hit")
+        showExplosion()
+    }
+    bullet.delete()
+}
+function startGame () {
+    player = game.createSprite(2, 4)
+    enemy = game.createSprite(2, 0)
+    game_has_started = 1
+}
 input.onButtonPressed(Button.A, function () {
     player.change(LedSpriteProperty.X, -1)
     radio.sendString("left")
@@ -45,17 +63,11 @@ function showExplosion () {
     basic.clearScreen()
 }
 input.onButtonPressed(Button.AB, function () {
-    bullet = game.createSprite(player.get(LedSpriteProperty.X), 4)
-    radio.sendString("fire")
-    for (let index = 0; index < 4; index++) {
-        bullet.change(LedSpriteProperty.Y, -1)
-        basic.pause(25)
+    if (game_has_started == 1) {
+        shootLogic()
+    } else {
+        startGame()
     }
-    if (bullet.isTouching(enemy)) {
-        radio.sendString("hit")
-        showExplosion()
-    }
-    bullet.delete()
 })
 radio.onReceivedString(function (receivedString) {
     if (receivedString == "left") {
@@ -84,10 +96,10 @@ input.onButtonPressed(Button.B, function () {
     radio.sendString("right")
 })
 let enemy_bullet: game.LedSprite = null
-let bullet: game.LedSprite = null
 let list: Image[] = []
 let enemy: game.LedSprite = null
 let player: game.LedSprite = null
+let bullet: game.LedSprite = null
+let game_has_started = 0
 radio.setGroup(69)
-player = game.createSprite(2, 4)
-enemy = game.createSprite(2, 0)
+game_has_started = 0
