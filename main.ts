@@ -17,8 +17,10 @@ function startGame () {
     game_has_started = 1
 }
 input.onButtonPressed(Button.A, function () {
-    player.change(LedSpriteProperty.X, -1)
-    radio.sendString("left")
+    if (game_has_started == 1) {
+        player.change(LedSpriteProperty.X, -1)
+        radio.sendString("left")
+    }
 })
 function showExplosion () {
     list = []
@@ -67,6 +69,7 @@ input.onButtonPressed(Button.AB, function () {
         shootLogic()
     } else {
         startGame()
+        radio.sendString("start")
     }
 })
 radio.onReceivedString(function (receivedString) {
@@ -90,10 +93,15 @@ radio.onReceivedString(function (receivedString) {
     if (receivedString == "hit") {
         showExplosion()
     }
+    if (receivedString == "start") {
+        startGame()
+    }
 })
 input.onButtonPressed(Button.B, function () {
-    player.change(LedSpriteProperty.X, 1)
-    radio.sendString("right")
+    if (game_has_started == 1) {
+        player.change(LedSpriteProperty.X, 1)
+        radio.sendString("right")
+    }
 })
 let enemy_bullet: game.LedSprite = null
 let list: Image[] = []
